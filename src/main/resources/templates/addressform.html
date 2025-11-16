@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add / Edit Address</title>
+</head>
+<body>
+
+<h1 th:text="${address.id == null ? 'Add Address' : 'Edit Address'}"></h1>
+
+<form th:action="@{/addresses/save}" th:object="${address}" method="post">
+
+    <input type="hidden" th:field="*{id}"/>
+
+    <label>First Name:</label>
+    <input type="text" th:field="*{firstName}">
+    <div th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+    <br>
+
+    <label>Last Name:</label>
+    <input type="text" th:field="*{lastName}">
+    <div th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+    <br>
+
+    <label>Street:</label>
+    <input type="text" th:field="*{street}">
+    <div th:if="${#fields.hasErrors('street')}" th:errors="*{street}"></div>
+    <br>
+
+    <label>Post Code:</label>
+    <input type="text" th:field="*{postCode}">
+    <div th:if="${#fields.hasErrors('postCode')}" th:errors="*{postCode}"></div>
+    <br>
+
+    <label>City:</label>
+    <input type="text" th:field="*{city}">
+    <div th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
+    <br>
+
+    <label>Country:</label>
+    <input type="text" th:field="*{country}">
+    <div th:if="${#fields.hasErrors('country')}" th:errors="*{country}"></div>
+    <br>
+
+    <label>Category:</label>
+    <select th:field="*{category}">
+        <option th:each="cat : ${categories}" 
+                th:value="${cat.id}" 
+                th:text="${cat.name}">
+        </option>
+    </select>
+    <div th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+    <br><br>
+
+    <button type="submit">Save</button>
+</form>
+
+<br>
+<a th:href="@{/addresses}">Back to list</a>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Address List</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<h1>Address List</h1>
+
+<p>
+    Logged in as: <strong th:text="${#authentication.name}"></strong>
+</p>
+
+<!-- ADMIN ONLY: Add button -->
+<div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+    <a th:href="@{/addresses/add}">Add New Address</a>
+</div>
+
+<table border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Street</th>
+            <th>Post Code</th>
+            <th>City</th>
+            <th>Country</th>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr th:each="address : ${addresses}">
+            <td th:text="${address.firstName}"></td>
+            <td th:text="${address.lastName}"></td>
+            <td th:text="${address.street}"></td>
+            <td th:text="${address.postCode}"></td>
+            <td th:text="${address.city}"></td>
+            <td th:text="${address.country}"></td>
+            <td th:text="${address.category.name}"></td>
+
+            <td>
+                <!-- USER: only see, no edit/delete -->
+                <!-- ADMIN: edit + delete -->
+                <span th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                    <a th:href="@{|/addresses/edit/${address.id}|}">Edit</a> |
+                    <a th:href="@{|/addresses/delete/${address.id}|}"
+                       onclick="return confirm('Delete this address?')">Delete</a>
+                </span>
+                <span th:if="${#authorization.expression('hasRole(''USER'')')}">
+                    (view only)
+                </span>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<br>
+
+<!-- Logout -->
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
+
+</body>
+</html>

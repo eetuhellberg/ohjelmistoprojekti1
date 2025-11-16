@@ -27,15 +27,15 @@ public class AddressController {
     }
 
     //listaa kaikki
-    @GetMapping("/addresses")
-    public String listAddresses(Model model) {
-        model.addAttribute("addresses", addressRepository.findAll());
-        return "/addresslist";
+    @GetMapping("/addresslist")
+    public String addressList(Model model) {
+        model.addAttribute("addresses", addressRepository.findAllWithCategory());
+        return "addresslist";
     }
 
     //uuden osoitteen luonti
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/addresses/add")
+    @GetMapping("/addresslist/add")
     public String addAddressForm(Model model) {
         model.addAttribute("address", new Address());
         model.addAttribute("categories", categoryRepository.findAll());
@@ -44,19 +44,19 @@ public class AddressController {
 
     //uuden osoitteen tallennus
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/addresses/save")
+    @PostMapping("/addresslist/save")
     public String saveAddress(@Valid @ModelAttribute("address") Address address, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", categoryRepository.findAll());
             return "addressform";
         }
         addressRepository.save(address);
-        return "redirect:/addresses";
+        return "redirect:/addresslist";
     }
 
     //osoitteen muokkaus
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/addresses/edit/{id}")
+    @GetMapping("/addresslist/edit/{id}")
     public String editAddress(@PathVariable("id") Long id, Model model) {
         model.addAttribute("address", addressRepository.findById(id).orElse(null));
         model.addAttribute("categories", categoryRepository.findAll());
@@ -65,10 +65,10 @@ public class AddressController {
 
     //osoitteen poisto
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/addresses/delete/{id}")
+    @GetMapping("/addresslist/delete/{id}")
     public String deleteAddress(@PathVariable("id") Long id) {
         addressRepository.deleteById(id);
-        return "redirect:/addresses";
+        return "redirect:/addresslist";
     }
     
 }

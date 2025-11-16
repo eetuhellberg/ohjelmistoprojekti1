@@ -3,6 +3,7 @@ package syksy25.card.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -46,7 +47,7 @@ public class Address {
     @Size(max = 50, message = "Country name must be max of 50")
     private String country;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     @JsonIgnoreProperties("addresses")
     private Category category;

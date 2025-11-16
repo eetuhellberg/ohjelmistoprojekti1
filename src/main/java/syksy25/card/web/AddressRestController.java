@@ -2,6 +2,7 @@ package syksy25.card.web;
 
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +11,7 @@ import syksy25.card.domain.Address;
 import syksy25.card.domain.AddressRepository;
 
 @RestController
-@RequestMapping("/api/addresses")
+@RequestMapping("/api/addresslist")
 public class AddressRestController {
     
     private final AddressRepository addressRepository;
@@ -36,10 +37,26 @@ public class AddressRestController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("I{id}")
-    public Address updateAddress(@PathVariable Long id, @Valid @RequestBody Address address) {
-        address.setId(id);
-        return addressRepository.save(address);
+    @PutMapping("/{id}")
+    public ResponseEntity<Address> updateAddress(
+            @PathVariable Long id,
+            @Valid @RequestBody Address updatedData) {
+
+        return addressRepository.findById(id)
+                .map(existing -> {
+                    // Update fields
+                    existing.setFirstName(updatedData.getFirstName());
+                    existing.setLastName(updatedData.getLastName());
+                    existing.setStreet(updatedData.getStreet());
+                    existing.setPostCode(updatedData.getPostCode());
+                    existing.setCity(updatedData.getCity());
+                    existing.setCountry(updatedData.getCountry());
+                    existing.setCategory(updatedData.getCategory());
+
+                    Address saved = addressRepository.save(existing);
+                    return ResponseEntity.ok(saved);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PreAuthorize("hasRole('ADMIN')")

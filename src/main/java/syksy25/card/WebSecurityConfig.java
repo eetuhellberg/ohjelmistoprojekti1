@@ -16,27 +16,20 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            .csrf(csrf -> csrf.disable())  // IMPORTANT → allows POST/PUT/DELETE from Postman
+            .csrf(csrf -> csrf.disable())
 
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints
                 .requestMatchers("/login", "/css/**", "/js/**", "/error").permitAll()
-
-                // Allow REST API to be tested from Postman
                 .requestMatchers("/api/**").permitAll()  
-
-                // Everything else requires login
                 .anyRequest().authenticated()
             )
 
-            // Enable form login
             .formLogin(form -> form
                 .loginPage("/login")
                 .defaultSuccessUrl("/addresslist", true)
                 .permitAll()
             )
 
-            // Enable Basic Auth for Postman
             .httpBasic(httpBasic -> {})
 
             .logout(logout -> logout.permitAll());
